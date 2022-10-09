@@ -142,13 +142,14 @@ class Gaussian
         int i, k;
         double sum;
 
-        for(k = 1; k < n-1; k++)
+        for(k = 0; k < n-1; k++)
         {
             for(i = k+1; i < n; i++)
             {
                 result[index[i]] = result[index[i]] - (matrix[index[i]][k] * result[index[k]]);
             }
         }
+        
         sumArray[n-1] = result[index[n-1]] / matrix[index[n-1]][n-1];
 
         for(i = n-1; i >= 0; i--)
@@ -213,7 +214,7 @@ class Gaussian
         System.out.println("Solution: ");
         for(int i = 0; i < array.length; i++)
         {
-            System.out.println(alphabet.values()[i] + " = " + array[i]);
+            System.out.printf(alphabet.values()[i] + " = %.2f\n", array[i]);
         }
     }
 
