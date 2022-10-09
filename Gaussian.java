@@ -1,3 +1,10 @@
+/*
+ * Project 1
+ * By Janista Gitbumrungsin
+ * CS3010.02 Fall 2022
+ * Professor Lajpat Raheja
+ */
+
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
@@ -154,5 +161,25 @@ class Gaussian
 
         inputFile.close();
         return output;
+    }
+
+    public static void printMatrix()
+    {
+        for(int i = 0; i < equations; i++)
+        {
+            for(int j = 0; j < equations+1; j++)
+            {
+                if(j < equations)
+                {
+                    System.out.print(matrix[i][j] + " ");
+                }
+                else
+                {
+                    System.out.print(result[i] + " ");
+                }
+            }
+            System.out.print("\n");
+        }
+
     }
 }
