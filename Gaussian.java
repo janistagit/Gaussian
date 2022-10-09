@@ -2,7 +2,7 @@
  * Project 1
  * By Janista Gitbumrungsin
  * CS3010.02 Fall 2022
- * Professor Lajpat Raheja
+ * Dr. Lajpat Rai Raheja
  */
 
 import java.util.Scanner;
@@ -35,12 +35,8 @@ class Gaussian
         }
 
         result = new double[equations];
-
         index = new int[equations];
-        for(int i = 1; i <= equations; i++)
-        {
-            index[i] = i;
-        }
+        sumArray = new double[equations];
 
         if(option == 1)
         {
@@ -77,41 +73,38 @@ class Gaussian
             catch(IOException exception)
             {
                 System.out.println("Error with file reading.");
+                System.exit(0);
             }
             kb.close();
         }
-
-        for(int i = 0; i < equations; i++)
-        {
-            for(int j = 0; j < equations; j++)
-            {
-                System.out.print(matrix[i][j] + " ");
-            }
-            System.out.print("\n");
-        }
-
         scan.close();
+
+        System.out.println();
+        System.out.println("Entered matrix: ");
+        printMatrix();
+        gauss(equations, matrix, index, result);
+        backSub(equations, matrix, index, result, sumArray);
+        printAnswer(sumArray);
     }
 
-    private static void Gauss(int n, double[][] matrix, int[]index)
+    private static void gauss(int n, double[][] matrix, int[]index, double[] result)
     {
         int i, j = 0, k;
         double r, rmax, smax, xmult;
         double[] scale = new double[n];
+
         for(i = 0; i < n; i++)
         {
+            index[i] = i;
             smax = 0;
             for(j = 0; j < n; j++)
             {
-                if(Math.abs(matrix[i][j]) >= smax)
-                {
-                    smax = Math.max(smax, Math.abs(matrix[i][j]));
-                }
+                smax = Math.max(smax, Math.abs(matrix[i][j]));
             }
             scale[i] = smax;
         }
 
-        for(k = 1; k < n-1; k++)
+        for(k = 0; k < n-1; k++)
         {
             rmax = 0;
             for(i = k; i < n; i++)
@@ -132,9 +125,14 @@ class Gaussian
                 matrix[index[i]][k] = xmult;
                 for(j = k+1; j < n; j++)
                 {
-                    matrix[index[i]][j] = matrix[index[i]][j] - (xmult*matrix[index[k]][j]);
+                    matrix[index[i]][j] = matrix[index[i]][j] - (xmult*(matrix[index[k]][j]));
                 }
             }
+
+            System.out.println();
+            System.out.println("Ratio: " + rmax);
+            System.out.println("Pivot Index: " + (index[k]+1));
+            printMatrix();
         }
 
     }
@@ -207,5 +205,20 @@ class Gaussian
             System.out.print("\n");
         }
 
+    }
+
+    public static void printAnswer(double[] array)
+    {
+        System.out.println();
+        System.out.println("Solution: ");
+        for(int i = 0; i < array.length; i++)
+        {
+            System.out.println(alphabet.values()[i] + " = " + array[i]);
+        }
+    }
+
+    public enum alphabet
+    {
+        x, y, z, a, b, c, d, e, f, g
     }
 }
