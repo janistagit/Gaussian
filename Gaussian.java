@@ -15,7 +15,8 @@ class Gaussian
     private static int equations = 11;
     private static int option = 0;
     private static double[][] matrix;
-    private static int[] result;
+    private static double[] sumArray;
+    private static double[] result;
     private static int[] index = {};
 
     public static void main(String[] args)
@@ -33,7 +34,7 @@ class Gaussian
             option = scan.nextInt();
         }
 
-        result = new int[equations];
+        result = new double[equations];
 
         index = new int[equations];
         for(int i = 1; i <= equations; i++)
@@ -81,13 +82,13 @@ class Gaussian
         }
 
         for(int i = 0; i < equations; i++)
+        {
+            for(int j = 0; j < equations; j++)
             {
-                for(int j = 0; j < equations; j++)
-                {
-                    System.out.print(matrix[i][j] + " ");
-                }
-                System.out.print("\n");
+                System.out.print(matrix[i][j] + " ");
             }
+            System.out.print("\n");
+        }
 
         scan.close();
     }
@@ -115,7 +116,7 @@ class Gaussian
             rmax = 0;
             for(i = k; i < n; i++)
             {
-                r = Math.abs(matrix[index[i]][k]/scale[index[i]]);
+                r = Math.abs(matrix[index[i]][k] / scale[index[i]]);
                 if(r > rmax)
                 {
                     rmax = r;
@@ -138,6 +139,31 @@ class Gaussian
 
     }
 
+    private static void backSub(int n, double[][] matrix, int[] index, double[] result, double[] sumArray)
+    {
+        int i, k;
+        double sum;
+
+        for(k = 1; k < n-1; k++)
+        {
+            for(i = k+1; i < n; i++)
+            {
+                result[index[i]] = result[index[i]] - (matrix[index[i]][k] * result[index[k]]);
+            }
+        }
+        sumArray[n-1] = result[index[n-1]] / matrix[index[n-1]][n-1];
+
+        for(i = n-1; i >= 0; i--)
+        {
+            sum = result[index[i]];
+            for(int j = i+1; j < n; j++)
+            {
+                sum = sum - (matrix[index[i]][j] * sumArray[j]);
+            }
+            sumArray[i] = sum / matrix[index[i]][i];
+        }
+    }
+
     private static double[][] readFile(String fileName) throws IOException
     {
         File myFile = new File(fileName);
@@ -145,19 +171,19 @@ class Gaussian
         double[][] output = new double[equations][equations];
 
         for(int i = 0; i < equations; i++)
+        {
+            for(int j = 0; j < equations+1; j++)
             {
-                for(int j = 0; j < equations+1; j++)
+                if(j < equations)
                 {
-                    if(j < equations)
-                    {
-                        output[i][j] = inputFile.nextInt();
-                    }
-                    else
-                    {
-                        result[i] = inputFile.nextInt();
-                    }
+                    output[i][j] = inputFile.nextInt();
+                }
+                else
+                {
+                    result[i] = inputFile.nextInt();
                 }
             }
+        }
 
         inputFile.close();
         return output;
