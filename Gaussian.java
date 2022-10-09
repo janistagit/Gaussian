@@ -7,13 +7,15 @@ class Gaussian
 {
     private static int equations = 11;
     private static int option = 0;
-    private static int[][] matrix = new int[1][1];
+    private static double[][] matrix;
+    private static int[] result;
+    private static int[] index = {};
 
     public static void main(String[] args)
     {
         System.out.println("\nGAUSSIAN ELIMINATION WITH SCALED PARTIAL PIVOTING");
         Scanner scan = new Scanner(System.in);
-        while(equations>10)
+        while(equations > 10)
         {
             System.out.println("Please enter the number of equations less than or equal to 10: ");
             equations = scan.nextInt();
@@ -24,16 +26,33 @@ class Gaussian
             option = scan.nextInt();
         }
 
+        result = new int[equations];
+
+        index = new int[equations];
+        for(int i = 1; i <= equations; i++)
+        {
+            index[i] = i;
+        }
+
         if(option == 1)
         {
             System.out.print("\n");
-            matrix = new int[equations][4];
+            matrix = new double[equations][equations];
             for(int i = 0; i < equations; i++)
             {
-                for(int j = 0; j < 4; j++)
+                for(int j = 0; j < equations+1; j++)
                 {
-                    System.out.println("Enter matrix coefficient: ");
-                    matrix[i][j] = scan.nextInt();
+                    if(j < equations)
+                    {
+                        System.out.println("Enter matrix coefficient: ");
+                        matrix[i][j] = scan.nextInt();
+                    }
+                    else
+                    {
+                        System.out.println("Enter b value: ");
+                        result[i] = scan.nextInt();
+                    }
+                    
                 }
             }
         }
@@ -56,7 +75,7 @@ class Gaussian
 
         for(int i = 0; i < equations; i++)
             {
-                for(int j = 0; j < 4; j++)
+                for(int j = 0; j < equations; j++)
                 {
                     System.out.print(matrix[i][j] + " ");
                 }
@@ -66,17 +85,70 @@ class Gaussian
         scan.close();
     }
 
-    private static int[][] readFile(String fileName) throws IOException
+    private static void Gauss(int n, double[][] matrix, int[]index)
+    {
+        int i, j = 0, k;
+        double r, rmax, smax, xmult;
+        double[] scale = new double[n];
+        for(i = 0; i < n; i++)
+        {
+            smax = 0;
+            for(j = 0; j < n; j++)
+            {
+                if(Math.abs(matrix[i][j]) >= smax)
+                {
+                    smax = Math.max(smax, Math.abs(matrix[i][j]));
+                }
+            }
+            scale[i] = smax;
+        }
+
+        for(k = 1; k < n-1; k++)
+        {
+            rmax = 0;
+            for(i = k; i < n; i++)
+            {
+                r = Math.abs(matrix[index[i]][k]/scale[index[i]]);
+                if(r > rmax)
+                {
+                    rmax = r;
+                    j = i;
+                }
+            }
+            int temp = index [j];
+            index[j] = index[k];
+            index[k] = temp;
+            for(i = k+1; i < n; i++)
+            {
+                xmult = matrix[index[i]][k] / matrix[index[k]][k];
+                matrix[index[i]][k] = xmult;
+                for(j = k+1; j < n; j++)
+                {
+                    matrix[index[i]][j] = matrix[index[i]][j] - (xmult*matrix[index[k]][j]);
+                }
+            }
+        }
+
+    }
+
+    private static double[][] readFile(String fileName) throws IOException
     {
         File myFile = new File(fileName);
         Scanner inputFile = new Scanner(myFile);
-        int[][] output = new int[equations][4];
+        double[][] output = new double[equations][equations];
 
         for(int i = 0; i < equations; i++)
             {
-                for(int j = 0; j < 4; j++)
+                for(int j = 0; j < equations+1; j++)
                 {
-                    output[i][j] = inputFile.nextInt();
+                    if(j < equations)
+                    {
+                        output[i][j] = inputFile.nextInt();
+                    }
+                    else
+                    {
+                        result[i] = inputFile.nextInt();
+                    }
                 }
             }
 
