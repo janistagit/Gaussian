@@ -23,9 +23,9 @@ class Gaussian
     {
         System.out.println("\nGAUSSIAN ELIMINATION WITH SCALED PARTIAL PIVOTING");
         Scanner scan = new Scanner(System.in);
-        while(equations > 10)
+        while(equations > 10 || equations < 2)
         {
-            System.out.println("Please enter the number of equations less than or equal to 10: ");
+            System.out.println("Please enter the number of equations in the system (less than or equal to 10): ");
             equations = scan.nextInt();
         }
         while(option != 1 && option != 2)
